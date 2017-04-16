@@ -1,23 +1,24 @@
 defmodule Triary.LinebotController do
   use Triary.Web, :controller
 
-  alias Triary.Linebot
+  alias Triary.Diary
 
   def index(conn, _params) do
-    linebots = Repo.all(Linebot)
-    render(conn, "index.json", linebots: linebots)
+    diaries = Repo.all(Diary)
+    render(conn, "index.json", diaries: diaries)
   end
 
-  def create(conn, %{"linebot" => linebot_params}) do
-    IO.puts inspect linebot_params
-    changeset = Linebot.changeset(%Linebot{}, linebot_params)
+  def create(conn, %{"diary" => diary_params}) do
+
+    IO.puts inspect diary_params
+    changeset = Diary.changeset(%Diary{}, diary_params)
 
     case Repo.insert(changeset) do
-      {:ok, linebot} ->
+      {:ok, diary} ->
         conn
         |> put_status(:created)
-        |> put_resp_header("location", linebot_path(conn, :show, linebot))
-        |> render("show.json", linebot: linebot)
+        |> put_resp_header("location", linebot_path(conn, :show, diary))
+        |> render("show.json", diary: diary)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -26,17 +27,17 @@ defmodule Triary.LinebotController do
   end
 
   def show(conn, %{"id" => id}) do
-    linebot = Repo.get!(Linebot, id)
-    render(conn, "show.json", linebot: linebot)
+    diary = Repo.get!(Diary, id)
+    render(conn, "show.json", diary: diary)
   end
 
-  def update(conn, %{"id" => id, "linebot" => linebot_params}) do
-    linebot = Repo.get!(Linebot, id)
-    changeset = Linebot.changeset(linebot, linebot_params)
+  def update(conn, %{"id" => id, "diary" => diary_params}) do
+    diary = Repo.get!(Diary, id)
+    changeset = Diary.changeset(diary, diary_params)
 
     case Repo.update(changeset) do
-      {:ok, linebot} ->
-        render(conn, "show.json", linebot: linebot)
+      {:ok, diary} ->
+        render(conn, "show.json", diary: diary)
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -45,11 +46,11 @@ defmodule Triary.LinebotController do
   end
 
   def delete(conn, %{"id" => id}) do
-    linebot = Repo.get!(Linebot, id)
+    diary = Repo.get!(Diary, id)
 
     # Here we use delete! (with a bang) because we expect
     # it to always work (and if it does not, it will raise).
-    Repo.delete!(linebot)
+    Repo.delete!(diary)
 
     send_resp(conn, :no_content, "")
   end
