@@ -14,6 +14,7 @@ defmodule Triary do
       supervisor(Triary.Endpoint, []),
       # Start your own worker by calling: Triary.Worker.start_link(arg1, arg2, arg3)
       # worker(Triary.Worker, [arg1, arg2, arg3]),
+      supervisor(Triary.StateAgent, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
