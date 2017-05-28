@@ -2,28 +2,35 @@ defmodule Triary.LinebotController do
   use Triary.Web, :controller
 
   alias Triary.Diary
+  alias Triary.DiaryState
+  alias Triary.StateAgent
 
   def index(conn, _params) do
     diaries = Repo.all(Diary)
     render(conn, "index.json", diaries: diaries)
   end
 
-  def create(conn, %{"diary" => diary_params}) do
+  def create(conn, %{"events" => events}) do
 
-    IO.puts inspect diary_params
-    changeset = Diary.changeset(%Diary{}, diary_params)
+    %{"source" => %{"userId" => line_id}, "replyToken" => replyToken } = List.first events
 
-    case Repo.insert(changeset) do
-      {:ok, diary} ->
-        conn
-        |> put_status(:created)
-        |> put_resp_header("location", linebot_path(conn, :show, diary))
-        |> render("show.json", diary: diary)
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Triary.ChangesetView, "error.json", changeset: changeset)
-    end
+    String.to_atom(line_id)
+    |> StateAgent.message(replyToken)
+
+    #changeset = Diary.changeset(%Diary{}, diary_params)
+
+    #case Repo.insert(changeset) do
+    #  {:ok, diary} ->
+    #    conn
+    #    |> put_status(:created)
+    #    |> put_resp_header("location", linebot_path(conn, :show, diary))
+    #    |> render("show.json", diary: diary)
+    #  {:error, changeset} ->
+    #    conn
+    #    |> put_status(:unprocessable_entity)
+    #    |> render(Triary.ChangesetView, "error.json", changeset: changeset)
+    #end
+    send_resp(conn, :no_content, "")
   end
 
   def show(conn, %{"id" => id}) do
