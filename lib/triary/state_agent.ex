@@ -14,10 +14,16 @@ defmodule Triary.StateAgent do
     Agent.get(name, fn map -> Map.get(map, line_id) end)
   end
 
+  def process_message(name, message) do
+    unless Process.whereis(name), do: start_link(name)
+      
+    current_state = Agent.get(name, fn current_state -> current_state end)
+    
+  end
+
   def message(name, replyToken) do
-    unless Process.whereis(name) do
-      start_link(name)
-    end
+    unless Process.whereis(name), do: start_link(name)
+
     {message, new_state} = case Agent.get(name, fn current_state -> current_state end) do
       :worst -> {"週末何していますか？", :best}
       :best  -> {"忙しいですか？", :try}

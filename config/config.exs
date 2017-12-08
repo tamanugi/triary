@@ -22,6 +22,9 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :triary,
+  linebot_token: "4kjREOL5N9peafyT500jxUkP0Fre3/JSfJQTp0SUoJs/nzjJrQnCtq0nUaziFyk46bKkhawGLCbhDKU4WQeabFLf14tPLfkNZtwNeE2uCHd8ig1s7sCnHBU2Sra20OWfeUNursQdER7xe0HcrAzbvAdB04t89/1O/w1cDnyilFU="
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
